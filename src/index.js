@@ -29,11 +29,13 @@ const searchImages = async (query, page = 1) => {
         orientation: 'horizontal',
         safesearch: true,
         page: page,
-        per_page: 20,
+        per_page: 40,
       },
     });
 
     const { hits, totalHits } = response.data;
+    const totalPages = Math.ceil(totalHits / 40);
+    gallery.innerHTML = '';
 
     if (hits.length === 0) {
       Notiflix.Notify.failure(
@@ -77,14 +79,19 @@ const searchImages = async (query, page = 1) => {
     });
 
     if (page === 1) {
-      lightbox = new SimpleLightbox('.lightbox-link');
+      lightbox = new SimpleLightbox('.lightbox-link', { captionsData: "alt", captionDelay: "250" });
+      
     } else {
       lightbox.refresh();
     }
-
     currentPage++;
-    toggleLoadMoreBtn(hits.length < 20 || hits.length >= totalHits);
-  } catch (error) {
+    toggleLoadMoreBtn((currentPage === totalPages && hits.length === 40) || hits.length >= totalHits);
+    // currentPage++;
+    // toggleLoadMoreBtn(hits.length < 40 || hits.length >= totalHits);
+    // toggleLoadMoreBtn(currentPage === totalPages && hits.length === 40);
+  } 
+  
+  catch (error) {
     console.log('Error:', error);
     Notiflix.Notify.failure('Oops! Something went wrong. Please try again later.');
   }
@@ -103,7 +110,9 @@ const toggleLoadMoreBtn = (hide) => {
   if (hide) {
     loadMoreBtn.classList.add('hidden');
     Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
-  } else {
+  } 
+ 
+  else {
     loadMoreBtn.classList.remove('hidden');
   }
 };
