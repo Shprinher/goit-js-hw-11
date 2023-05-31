@@ -34,7 +34,7 @@ const searchImages = async (query, page = 1) => {
     });
 
     const { hits, totalHits } = response.data;
-    const totalPages = Math.ceil(totalHits / 40);
+    const totalPages = Math.ceil(totalHits / 40) + 1;
     gallery.innerHTML = '';
 
     if (hits.length === 0) {
