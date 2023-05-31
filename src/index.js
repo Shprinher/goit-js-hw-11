@@ -85,10 +85,8 @@ const searchImages = async (query, page = 1) => {
       lightbox.refresh();
     }
     currentPage++;
-    toggleLoadMoreBtn((currentPage === totalPages && hits.length === 40) || hits.length >= totalHits);
-    // currentPage++;
-    // toggleLoadMoreBtn(hits.length < 40 || hits.length >= totalHits);
-    // toggleLoadMoreBtn(currentPage === totalPages && hits.length === 40);
+    toggleLoadMoreBtn((currentPage === totalPages && hits.length <= 40) || hits.length >= totalHits);
+  
   } 
   
   catch (error) {
