@@ -39,6 +39,9 @@ const searchImages = async (query, page = 1) => {
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
+      gallery.innerHTML = '';
+      images = []; 
+      loadMoreBtn.classList.add('hidden');
       return;
     }
 
