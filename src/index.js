@@ -1,13 +1,12 @@
 // https://pixabay.com/api/?key=36676558-52c99867405fc59051d9850ec&q="${value}"&image_type="photo"&orientation="horizontal"&safesearch= "true"
 
-
 import './sass/styles.css';
 import axios from 'axios';
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-const API_KEY = '36676558-52c99867405fc59051d9850ec'; 
+const API_KEY = '36676558-52c99867405fc59051d9850ec';
 
 const searchForm = document.querySelector('#search-form');
 const loadMoreBtn = document.querySelector('.load-more');
@@ -15,9 +14,9 @@ const gallery = document.querySelector('.gallery');
 
 let currentPage = 1;
 let currentQuery = '';
+let images = []; 
 
 let lightbox;
-
 
 const searchImages = async (query, page = 1) => {
   try {
@@ -35,7 +34,6 @@ const searchImages = async (query, page = 1) => {
 
     const { hits, totalHits } = response.data;
     const totalPages = Math.ceil(totalHits / 40) + 1;
-    gallery.innerHTML = '';
 
     if (hits.length === 0) {
       Notiflix.Notify.failure(
@@ -46,6 +44,7 @@ const searchImages = async (query, page = 1) => {
 
     if (page === 1) {
       gallery.innerHTML = '';
+      images = []; 
       Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
     }
 
@@ -76,25 +75,22 @@ const searchImages = async (query, page = 1) => {
       a.appendChild(img);
       card.append(a, info);
       gallery.appendChild(card);
+
+      images.push(card); 
     });
 
     if (page === 1) {
       lightbox = new SimpleLightbox('.lightbox-link', { captionsData: "alt", captionDelay: "250" });
-      
     } else {
       lightbox.refresh();
     }
     currentPage++;
     toggleLoadMoreBtn((currentPage === totalPages && hits.length <= 40) || hits.length >= totalHits);
-  
-  } 
-  
-  catch (error) {
+  } catch (error) {
     console.log('Error:', error);
     Notiflix.Notify.failure('Oops! Something went wrong. Please try again later.');
   }
 };
-
 
 const createInfoItem = (label, value) => {
   const item = document.createElement('p');
@@ -103,20 +99,16 @@ const createInfoItem = (label, value) => {
   return item;
 };
 
-
 const toggleLoadMoreBtn = (hide) => {
   if (hide) {
     loadMoreBtn.classList.add('hidden');
     Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
-  } 
- 
-  else {
+  } else {
     loadMoreBtn.classList.remove('hidden');
   }
 };
 
 loadMoreBtn.classList.add('hidden');
-
 
 searchForm.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -131,7 +123,6 @@ searchForm.addEventListener('submit', (event) => {
   currentPage = 1;
   searchImages(currentQuery, currentPage);
 });
-
 
 loadMoreBtn.addEventListener('click', () => {
   searchImages(currentQuery, currentPage);
